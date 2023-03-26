@@ -34,7 +34,7 @@ Typing :: Typed
 """.splitlines()
 
 setup(
-    name="spreader",
+    name="eg.spreader",
     version="0.1.dev1",
     description="Fast spreadsheet logic library",
     long_description=README,
@@ -45,14 +45,14 @@ setup(
     download_url="http://pypi.python.org/pypi/spreader/",
     license="BSD-3-Clause",
     package_dir={'':'code/wrappers/python/src'},
-    packages=['spreader'],
+    packages=['eg.spreader'],
     package_data = {
-        'spreader': ['py.typed'],
+        'eg.spreader': ['py.typed'],
     },
     python_requires=">=3.7",
 
     cmake_source_dir="code",
     cmake_args=[
-        '-DSPR_PYTHON_PACKAGE_DIR=code/wrappers/python/src'
+        '-DSPR_PYTHON_PACKAGE_DIR=code/wrappers/python/src/eg'
     ]
 )
