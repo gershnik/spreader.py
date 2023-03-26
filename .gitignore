@@ -1,0 +1,10 @@
+.vscode/
+.venv/
+.pytest_cache/
+.nox/
+_skbuild/
+dist/
+
+.DS_Store
+__pycache__
+.extrapythons

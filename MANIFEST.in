@@ -1,0 +1,12 @@
+include code/CMakeLists.txt
+recursive-include code/cmake *.cmake
+recursive-include code/lib/code *.h *.cpp *.l *.y *.txt
+recursive-include code/wrappers/python/src *.h *.cpp *.h *.txt *.py *.pyi
+include pyproject.toml
+include setup.py
+
+global-exclude .gitignore
+global-exclude .gitmodules
+recursive-exclude _skbuild *
+exclude MANIFEST.in
+
