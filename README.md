@@ -4,7 +4,7 @@ A fast spreadsheet logic library.
 
 [![License](https://img.shields.io/badge/license-BSD-brightgreen.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![pypi](https://img.shields.io/pypi/v/eg.spreader)](https://pypi.org/project/eg.spreader)
-[![python](https://img.shields.io/badge/python->=3.7-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
+[![python](https://img.shields.io/badge/python->=3.7-blue.svg)](https://www.python.org)
 <!--https://img.shields.io/pypi/pyversions/eg.spreader -->
 
 <!-- References -->
@@ -18,15 +18,18 @@ It is currently in alpha stage.
 
 ## Install
 
-Spreader is a C++ library. In order to install it from source you will need 
+Spreader is a C++ library. Binary wheels are provided for common configurations on macOS and Windows.
+If you are on another platform or have an uncommon configuration `pip` will build the module from 
+source. 
+In order for a build from source to succeed you will need 
 - Working C++ compiler supporting C++20 standard
+  - Linux: GCC 11.3 or above
   - macOS: Xcode 14 or above 
   - Windows: Visual Studio 2022 or above 
-  - Linux: GCC 11.3 or above
 - On Linux you will also need Python development support (the python-dev or python3-dev package in most Linux distributions). 
 No further external dependencies are required. 
 
-You can use pip to install the module
+To install the module
 
 ```bash
 pip install eg.spreader
