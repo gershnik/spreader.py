@@ -38,13 +38,6 @@ jobs:
       - name: Install Nox
         run: pip install Nox
 
-      - name: Fixup Build Params
-        if: matrix.os == 'windows-latest' && matrix.python-version == 'pypy-3.8'
-        run: |
-          $Python3_ROOT_DIR=$Env:Python3_ROOT_DIR -replace '\\', '/'
-          echo SKBUILD_CONFIGURE_OPTIONS=-DPYTHON_LIBRARY=$Python3_ROOT_DIR/libs/python38.lib >> $Env:GITHUB_ENV
-          #Get-ChildItem -Path $Env:Python3_ROOT_DIR -Recurse
-
       - name: Test
         run: nox --sessions test --force-python ${{ steps.setup-python.outputs.python-path }}
 
