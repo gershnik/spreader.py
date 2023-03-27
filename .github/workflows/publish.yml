@@ -97,7 +97,7 @@ jobs:
         with:
           path: ./wheelhouse/*.whl
 
-  wrapup:
+  publish:
     needs: 
       - prepare 
       - wheels
