@@ -97,7 +97,7 @@ jobs:
           CIBW_ARCHS_MACOS: x86_64 universal2
           MACOSX_DEPLOYMENT_TARGET: 10.15
           CIBW_ARCHS_WINDOWS: AMD64 x86 ARM64
-          CIBW_BEFORE_BUILD_WINDOWS: rmdir /s /q "{package}\_skbuild"
+          CIBW_BEFORE_BUILD_WINDOWS: if exist "{package}\_skbuild" rmdir /s /q "{package}\_skbuild"
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: pytest --color=yes {project}/code/wrappers/python
 
