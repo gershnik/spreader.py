@@ -47,7 +47,7 @@ if system == 'Windows' and pythonType == 'PyPy':
 
 setup(
     name="eg.spreader",
-    version="0.1.12.dev1",
+    version="0.1.12",
     description="Fast spreadsheet logic library",
     long_description=README,
     long_description_content_type="text/markdown",
