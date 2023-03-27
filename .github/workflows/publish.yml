@@ -83,7 +83,7 @@ jobs:
           submodules: true CMAKE_OSX_ARCHITECTURES=arm64;x86_64
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.12
+        uses: pypa/cibuildwheel@v2.12.1
         env:
           CIBW_BUILD: ${{matrix.pyver}}-*
           CIBW_ARCHS_MACOS: auto universal2
