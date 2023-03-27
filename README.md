@@ -4,7 +4,8 @@ A fast spreadsheet logic library.
 
 [![License](https://img.shields.io/badge/license-BSD-brightgreen.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![pypi](https://img.shields.io/pypi/v/eg.spreader)](https://pypi.org/project/eg.spreader)
-[![Python](https://img.shields.io/badge/Python-3.7-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
+[![python](https://img.shields.io/badge/python->=3.7-blue.svg)](https://docs.python.org/3/whatsnew/3.7.html)
+<!--https://img.shields.io/pypi/pyversions/eg.spreader -->
 
 <!-- References -->
 
