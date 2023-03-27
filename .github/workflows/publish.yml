@@ -88,7 +88,7 @@ jobs:
           CIBW_BUILD: ${{matrix.pyver}}-*
           CIBW_ARCHS_MACOS: auto universal2
           MACOSX_DEPLOYMENT_TARGET: 10.15
-          CIBW_ARCHS_WINDOWS: AMD64
+          CIBW_ARCHS_WINDOWS: auto ARM64
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: pytest --color=yes {project}/code/wrappers/python
 
