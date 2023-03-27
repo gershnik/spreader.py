@@ -97,7 +97,9 @@ jobs:
           path: ./wheelhouse/*.whl
 
   wrapup:
-    needs: prepare, wheels
+    needs: 
+      - prepare 
+      - wheels
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
