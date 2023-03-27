@@ -35,7 +35,7 @@ Typing :: Typed
 
 setup(
     name="eg.spreader",
-    version="0.1.0",
+    version="0.1.1.dev1",
     description="Fast spreadsheet logic library",
     long_description=README,
     long_description_content_type="text/markdown",
