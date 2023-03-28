@@ -7,6 +7,8 @@ SPDX-License-Identifier: BSD-3-Clause
 
 from skbuild import setup  
 from pathlib import Path
+import platform
+import sys
 
 mydir = Path(__file__).parent
 
@@ -33,9 +35,19 @@ Topic :: Office/Business :: Financial :: Spreadsheet
 Typing :: Typed 
 """.splitlines()
 
+CMAKE_EXTRA_ARGS = []
+
+pythonType = platform.python_implementation()
+system = platform.system()
+
+#work around bug in scikit-build
+if system == 'Windows' and pythonType == 'PyPy':
+    maj, min, _ = platform.python_version_tuple()
+    CMAKE_EXTRA_ARGS += [f'-DPYTHON_LIBRARY={sys.base_prefix}/libs/python{maj}{min}.lib']
+
 setup(
     name="eg.spreader",
-    version="0.1.dev1",
+    version="0.1.0.dev1",
     description="Fast spreadsheet logic library",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -52,7 +64,7 @@ setup(
     python_requires=">=3.7",
 
     cmake_source_dir="code",
-    cmake_args=[
+    cmake_args= [
         '-DSPR_PYTHON_PACKAGE_DIR=code/wrappers/python/src/eg'
-    ]
+    ] + CMAKE_EXTRA_ARGS
 )

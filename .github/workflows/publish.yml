@@ -1,8 +1,16 @@
 name: Publish package
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      destination:
+        type: choice
+        description: 'Publish to:'
+        options:
+          - pypi
+          - testpypi
 
 jobs:
-  publish:
+  prepare:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -24,12 +32,6 @@ jobs:
         run: |
           echo "NEW_VERSION=$(tools/update-version.py release)" >> $GITHUB_ENV
 
-      - name: Build
-        run: |
-          rm -rf code/wrappers/python/src/spreader.egg-info 
-          mkdir -p dist/tmp 
-          python3 setup.py egg_info --egg-base dist/tmp sdist 
-
       - name: Update changelog
         uses: superfaceai/release-changelog-action@v2
         with:
@@ -38,11 +40,19 @@ jobs:
           operation: release
 
       - name: Commit CHANGELOG.md and package.json changes and create tag
+        id: tagRelease
         run: |
           git add "setup.py"
           git add "CHANGELOG.md"
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
-          git tag ${{ env.NEW_VERSION }}
+          git tag v${{ env.NEW_VERSION }}
+          echo "newVersion=${{ env.NEW_VERSION }}" >> "$GITHUB_OUTPUT"
+
+      - name: Build Source Distribution
+        run: |
+          rm -rf code/wrappers/python/src/spreader.egg-info 
+          mkdir -p dist/tmp 
+          python3 setup.py egg_info --egg-base dist/tmp sdist 
 
       - name: Set next dev version
         run: |
@@ -56,28 +66,96 @@ jobs:
         run: |
           git push origin && git push --tags
 
-      - name: Publish
-        run: twine upload --non-interactive dist/eg.spreader-${{ env.NEW_VERSION }}.tar.gz 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist/*.tar.gz
+
+    outputs:
+      newVersion: ${{ steps.tagRelease.outputs.newVersion }}
+
+  wheels:
+    needs: prepare
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        pyver: [cp37, cp38, cp39, cp310, cp311, pp38, pp39]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: v${{needs.prepare.outputs.newVersion}}
+          submodules: true
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.12.1
         env:
-          TWINE_REPOSITORY: testpypi
+          CIBW_BUILD: ${{matrix.pyver}}-*
+          CIBW_ARCHS_MACOS: x86_64 universal2
+          MACOSX_DEPLOYMENT_TARGET: 10.15
+          CIBW_ARCHS_WINDOWS: AMD64 x86 ARM64
+          CIBW_BEFORE_BUILD_WINDOWS: if exist "{package}\_skbuild" rmdir /s /q "{package}\_skbuild"
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: pytest --color=yes {project}/code/wrappers/python
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
+
+  publish:
+    needs: 
+      - prepare 
+      - wheels
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: v${{needs.prepare.outputs.newVersion}}
+          submodules: true
+
+      - name: Setup python environment
+        run: |
+          pip3 install -r requirements.txt
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: Publish
+        run: |
+          if [[ "$TWINE_REPOSITORY" == "testpypi" ]]; then
+            export TWINE_PASSWORD=${{ secrets.TESTPYPI_ACCESS_TOKEN }}
+          else
+            export TWINE_PASSWORD=${{ secrets.PYPI_ACCESS_TOKEN }}
+          fi
+          twine upload --non-interactive dist/* 
+        env:
+          TWINE_REPOSITORY: ${{ github.event.inputs.destination }}
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TESTPYPI_ACCESS_TOKEN }}
 
       - id: get-changelog
         name: Get version changelog
         uses: superfaceai/release-changelog-action@v2
         with:
           path-to-changelog: CHANGELOG.md
-          version: ${{ env.NEW_VERSION }}
+          version: ${{needs.prepare.outputs.newVersion}}
           operation: read
 
       - name: Update GitHub release documentation
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.NEW_VERSION }}
+          tag_name: v${{needs.prepare.outputs.newVersion}}
           body: ${{ steps.get-changelog.outputs.changelog }}
           files: |
-            dist/eg.spreader-${{ env.NEW_VERSION }}.tar.gz
+            dist/*
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

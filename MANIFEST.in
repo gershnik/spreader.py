@@ -1,7 +1,8 @@
 include code/CMakeLists.txt
 recursive-include code/cmake *.cmake
 recursive-include code/lib/code *.h *.cpp *.l *.y *.txt
-recursive-include code/wrappers/python/src *.h *.cpp *.h *.txt *.py *.pyi
+recursive-include code/wrappers/python/src *.h *.cpp *.h *.py *.pyi
+include code/wrappers/python/CMakeLists.txt
 include pyproject.toml
 include setup.py
 
