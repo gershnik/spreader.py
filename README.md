@@ -81,7 +81,7 @@ Similarly area coordinates can be given either as "A1:B2" or as `Rect(Point(x=..
 ## Cell values
 
 Spreader supports the following cell value types: `None` (e.g. blank cell), `bool`, `float`, `str` and instances of its own
-`ErrorValue` class (e.g. `Errors.InvalidReference`) that represent the usual spreadsheet #-errors (e.g. `#REF!`).
+`ErrorValue` class. All known errors are available as constants from `Errors` class (e.g. `Errors.InvalidReference`) and represent the usual spreadsheet #-errors (e.g. `#REF!`).
 
 Numbers contained in a cell are never NaNs and never infinite. Setting a NaN or infinite value cell will result in an `ErrorValue` instead.
 
@@ -168,9 +168,7 @@ For all these calls the formula references are adjusted in normal spreadsheet fa
 ## Roadmap and missing features
 
 Spreader is currently in alpha - implemented features work and work well but many desirable things are missing.
-In particular, it is currently impossible to implement a full, performant spreadsheet UI on top of it. This is
-mostly due to lack of things such as change notifications, undo and support of keeping track of cell formatting.
-With this in mind the following features are on the roadmap
+The following features are currently on the roadmap:
 
 - Change notifications to enable clients to react to cells changed during recalculation
 - Ability to associate abstract formatting information with cells rows and columns. Spreader itself doesn't care
@@ -182,6 +180,8 @@ about formatting - it just needs to keep track of it for clients to act upon.
 - Support localized formula input. Currently formula syntax must use US English syntax: `.` as decimal separator, `,` to separate
 arguments. Excel allows using `,` and `;` for languages that use comma as decimal separator.
 - Serialization/deserialization. Likely in `xlsx` and `json`.
+- Maybe: support manipulating very large spreadsheets by offloading parts of them to persistent 
+storage and not keeping everything in memory.
 - Maybe: support doing spreadsheet math using decimals rather than doubles.
 
 
